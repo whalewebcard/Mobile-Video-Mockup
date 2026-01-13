@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone 14 Pro Video Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --iphone-frame: #1c1c1e;
+            --iphone-border: #48484a;
+            --iphone-screen-bg: #000;
+        }
+
+        body {
+            background-color: #FDFDF4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* The Device Container */
+        .iphone-14-pro {
+            position: relative;
+            width: 330px; 
+            height: 680px; 
+            background: var(--iphone-frame);
+            border-radius: 50px;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2), 
+                        inset 0 0 4px 2px rgba(255,255,255,0.1);
+            border: 8px solid var(--iphone-border);
+            padding: 10px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+        }
+
+        /* Screen Area */
+        .screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--iphone-screen-bg);
+            border-radius: 36px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dynamic Island */
+        .dynamic-island-container {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: 85px;
+            height: 25px;
+            background: #000;
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            cursor: pointer;
+        }
+
+        .dynamic-island-container.expanded {
+            width: 200px;
+            height: 40px;
+            background: #1c1c1e;
+        }
+
+        /* Hardware Buttons */
+        .button {
+            position: absolute;
+            background: var(--iphone-border);
+            border-radius: 2px;
+        }
+        .silent-switch { width: 3px; height: 25px; left: -11px; top: 100px; }
+        .volume-up { width: 3px; height: 50px; left: -11px; top: 150px; }
+        .volume-down { width: 3px; height: 50px; left: -11px; top: 210px; }
+        .power-button { width: 3px; height: 80px; right: -11px; top: 180px; }
+
+        /* Media Elements */
+        #media-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+
+        video, img {
+            width: 100%;
+            height: 100%;
+            transition: object-fit 0.3s ease;
+            transform-origin: center center;
+        }
+
+        /* Crop Modes */
+        .fit-cover { object-fit: cover; }
+        .fit-contain { object-fit: contain; }
+        .fit-fill { object-fit: fill; }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.4) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 45px 20px 35px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 30;
+        }
+
+        .screen:hover .video-overlay {
+            opacity: 1;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #fff;
+            border-radius: 2px;
+            width: 0%;
+        }
+
+        .status-bar {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 28px 0;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 40;
+            pointer-events: none;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.15);
+            padding: 8px;
+            border-radius: 99px;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .control-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .zoom-controls {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 45;
+            background: rgba(0,0,0,0.4);
+            padding: 12px 6px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .screen:hover .zoom-controls {
+            opacity: 1;
+        }
+
+        input[type=range].vertical-slider {
+            writing-mode: bt-lr; /* IE */
+            appearance: slider-vertical; /* Webkit */
+            width: 8px;
+            height: 120px;
+            padding: 0 5px;
+        }
+
+        .color-input-wrapper {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        #bg-hex-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 10px;
+            width: 55px;
+            outline: none;
+            font-family: monospace;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 400px) {
+            .iphone-14-pro {
+                transform: scale(0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="iphone-14-pro">
+        <div class="button silent-switch"></div>
+        <div class="button volume-up"></div>
+        <div class="button volume-down"></div>
+        <div class="button power-button"></div>
+
+        <div class="screen" id="app-screen">
+            <div class="status-bar">
+                <span id="current-time">9:41</span>
+                <div class="flex gap-1 items-center">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+                </div>
+            </div>
+
+            <div class="dynamic-island-container" id="island" onclick="toggleIsland()">
+                <div id="island-content-left" class="hidden text-[10px] text-white overflow-hidden whitespace-nowrap">Media Zoom</div>
+                <div id="island-visualizer" class="w-full h-[2px] bg-white opacity-20 rounded-full mx-2 hidden"></div>
+                <div id="island-content-right" class="hidden text-[10px] text-white" id="zoom-label">1.0x</div>
+            </div>
+
+            <!-- ส่วนควบคุมการยืดขยายด้วยตนเอง (Manual Zoom) -->
+            <div class="zoom-controls">
+                <span class="text-[10px] text-white font-bold">+</span>
+                <input type="range" id="zoom-slider" class="vertical-slider" min="0.5" max="3" step="0.01" value="1">
+                <span class="text-[10px] text-white font-bold">-</span>
+                <button class="control-btn !p-1" id="reset-zoom" title="รีเซ็ตการขยาย">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+            </div>
+
+            <div id="media-container">
+                <video id="main-video" loop playsinline class="fit-cover">
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-stars-in-the-night-sky-loop-4006-large.mp4" type="video/mp4">
+                </video>
+                <img id="main-image" class="hidden fit-cover" alt="Uploaded Content">
+            </div>
+
+            <div class="video-overlay" id="video-overlay">
+                <div class="flex justify-between items-center text-white">
+                    <button class="control-btn" id="fit-btn" title="สลับโหมดการครอบภาพอัตโนมัติ">
+                        <div class="flex items-center gap-1 px-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                            </svg>
+                            <span class="text-[9px] font-bold uppercase" id="fit-btn-text">Cover</span>
+                        </div>
+                    </button>
+                    
+                    <div class="flex gap-2 items-center">
+                        <div class="color-input-wrapper">
+                            <label class="cursor-pointer flex items-center" title="เลือกสีพื้นหลัง">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                                </svg>
+                                <input type="color" id="bg-color-input" class="hidden" value="#FDFDF4">
+                            </label>
+                            <input type="text" id="bg-hex-input" value="#FDFDF4" placeholder="#HEX">
+                        </div>
+
+                        <label class="control-btn" title="อัปโหลด">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <input type="file" id="file-input" class="hidden" accept="video/*,image/*">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center" id="play-container">
+                    <div id="play-icon" class="bg-black/30 backdrop-blur-md p-5 rounded-full mb-4 border border-white/10 cursor-pointer" onclick="togglePlay()">
+                        <svg id="play-svg" class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="w-full" id="progress-section">
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-white/90 font-medium">
+                        <span id="time-current">0:00</span>
+                        <span id="time-total">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('main-video');
+        const image = document.getElementById('main-image');
+        const fileInput = document.getElementById('file-input');
+        const bgColorInput = document.getElementById('bg-color-input');
+        const bgHexInput = document.getElementById('bg-hex-input');
+        const zoomSlider = document.getElementById('zoom-slider');
+        const resetZoom = document.getElementById('reset-zoom');
+        const playSvg = document.getElementById('play-svg');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const progressSection = document.getElementById('progress-section');
+        const playContainer = document.getElementById('play-container');
+        const timeCurrent = document.getElementById('time-current');
+        const timeTotal = document.getElementById('time-total');
+        const island = document.getElementById('island');
+        const clock = document.getElementById('current-time');
+        const fitBtn = document.getElementById('fit-btn');
+        const fitBtnText = document.getElementById('fit-btn-text');
+        const zoomLabel = document.getElementById('zoom-label');
+
+        const fitModes = ['fit-cover', 'fit-contain', 'fit-fill'];
+        let currentFitIndex = 0;
+        let isExpanded = false;
+
+        // อัปเดตนาฬิกา
+        function updateClock() {
+            const now = new Date();
+            clock.innerText = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // จัดการสีพื้นหลัง
+        bgColorInput.addEventListener('input', (e) => {
+            const color = e.target.value;
+            document.body.style.backgroundColor = color;
+            bgHexInput.value = color.toUpperCase();
+        });
+
+        bgHexInput.addEventListener('input', (e) => {
+            let color = e.target.value;
+            if (!color.startsWith('#')) color = '#' + color;
+            if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(color)) {
+                document.body.style.backgroundColor = color;
+                bgColorInput.value = color;
+            }
+        });
+
+        // ฟังก์ชัน Zoom/Scale ด้วยตนเอง
+        function updateScale(val) {
+            const scale = `scale(${val})`;
+            video.style.transform = scale;
+            image.style.transform = scale;
+            zoomLabel.innerText = `${parseFloat(val).toFixed(1)}x`;
+            
+            // แสดงสถานะบน Dynamic Island
+            if(!isExpanded) toggleIsland();
+        }
+
+        zoomSlider.addEventListener('input', (e) => {
+            updateScale(e.target.value);
+        });
+
+        resetZoom.addEventListener('click', (e) => {
+            e.stopPropagation();
+            zoomSlider.value = 1;
+            updateScale(1);
+            setTimeout(() => { if(isExpanded) toggleIsland(); }, 1000);
+        });
+
+        // สลับโหมด Fit อัตโนมัติ
+        fitBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentFitIndex = (currentFitIndex + 1) % fitModes.length;
+            const newFit = fitModes[currentFitIndex];
+            
+            [video, image].forEach(el => {
+                el.classList.remove(...fitModes);
+                el.classList.add(newFit);
+            });
+            
+            const modeName = newFit.split('-')[1].toUpperCase();
+            fitBtnText.innerText = modeName;
+        });
+
+        // อัปโหลดไฟล์
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const fileUrl = URL.createObjectURL(file);
+            const isVideo = file.type.startsWith('video/');
+            if (isVideo) {
+                video.src = fileUrl;
+                video.classList.remove('hidden');
+                image.classList.add('hidden');
+                progressSection.classList.remove('invisible');
+                playContainer.classList.remove('invisible');
+                video.play();
+                updatePlayIcon(true);
+            } else {
+                image.src = fileUrl;
+                image.classList.remove('hidden');
+                video.classList.add('hidden');
+                video.pause();
+                progressSection.classList.add('invisible');
+                playContainer.classList.add('invisible');
+            }
+        });
+
+        function updatePlayIcon(isPlaying) {
+            playSvg.innerHTML = isPlaying ? 
+                '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' : 
+                '<path d="M8 5v14l11-7z"/>';
+        }
+
+        function togglePlay() {
+            if (video.classList.contains('hidden')) return;
+            if (video.paused) {
+                video.play();
+                updatePlayIcon(true);
+            } else {
+                video.pause();
+                updatePlayIcon(false);
+            }
+        }
+
+        video.addEventListener('timeupdate', () => {
+            const percentage = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = percentage + '%';
+            timeCurrent.innerText = formatTime(video.currentTime);
+            if (!isNaN(video.duration)) timeTotal.innerText = formatTime(video.duration);
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            if (video.classList.contains('hidden')) return;
+            video.currentTime = (e.offsetX / progressContainer.clientWidth) * video.duration;
+        });
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return min + ":" + sec.toString().padStart(2, '0');
+        }
+
+        function toggleIsland() {
+            isExpanded = !isExpanded;
+            const left = document.getElementById('island-content-left');
+            const right = document.getElementById('island-content-right');
+            const viz = document.getElementById('island-visualizer');
+            if (isExpanded) {
+                island.classList.add('expanded');
+                setTimeout(() => {
+                    left.classList.remove('hidden');
+                    right.classList.remove('hidden');
+                    viz.classList.remove('hidden');
+                }, 150);
+            } else {
+                left.classList.add('hidden');
+                right.classList.add('hidden');
+                viz.classList.add('hidden');
+                island.classList.remove('expanded');
+            }
+        }
+    </script>
+</body>
+</html>
