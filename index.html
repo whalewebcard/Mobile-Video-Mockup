@@ -157,7 +157,7 @@
         .overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 50%);
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.4) 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -167,6 +167,24 @@
         }
 
         .screen:hover .overlay { opacity: 1; }
+
+        /* Progress Bar Styling */
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: white;
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
 
         /* Custom Color Input */
         input[type="color"] {
@@ -206,16 +224,32 @@
                 </video>
 
                 <div class="overlay">
-                    <div class="w-full bg-white/20 h-1 rounded-full overflow-hidden mb-4">
-                        <div id="progress" class="bg-white h-full w-0"></div>
+                    <!-- คลิกที่แถบเพื่อข้ามเวลา -->
+                    <div class="progress-container" id="progress-parent" onclick="seek(event)">
+                        <div id="progress" class="progress-bar"></div>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <button onclick="togglePlay()" class="text-white">
-                            <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                        </button>
-                        <div class="flex gap-3">
-                            <button onclick="document.getElementById('file-upload').click()" class="text-white/80">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    
+                    <div class="flex justify-between items-center px-2">
+                        <div class="flex gap-5 items-center">
+                            <!-- ปุ่มถอยหลัง 10 วิ -->
+                            <button onclick="skip(-10)" class="text-white hover:scale-110 active:scale-90 transition-transform" title="ถอยหลัง 10 วินาที">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.5 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6c-1.66 0-3.17-.67-4.24-1.76l-1.41 1.41C8.16 18.57 9.97 19.5 12.5 19.5c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+                            </button>
+
+                            <!-- ปุ่มเล่น/หยุด -->
+                            <button onclick="togglePlay()" class="text-white hover:scale-110 active:scale-90 transition-transform">
+                                <svg id="play-icon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+
+                            <!-- ปุ่มไปข้างหน้า 10 วิ -->
+                            <button onclick="skip(10)" class="text-white hover:scale-110 active:scale-90 transition-transform" title="ไปข้างหน้า 10 วินาที">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3c4.97 0 9 4.03 9 9H23l-3.89 3.89-.07.14L15 12h3c0-3.31-2.69-6-6-6s-6 2.69-6 6 2.69 6 6 6c1.66 0 3.17-.67 4.24-1.76l1.41 1.41C15.84 18.57 14.03 19.5 11.5 19.5c-4.97 0-9-4.03-9-9s4.03-9 9-9z"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="flex gap-4 items-center">
+                            <button onclick="document.getElementById('file-upload').click()" class="text-white/80 hover:text-white transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                             </button>
                         </div>
                     </div>
@@ -229,10 +263,10 @@
 
     <!-- Settings Trigger -->
     <div class="fixed top-6 right-6 flex gap-3 z-[250]">
-        <button onclick="toggleFullScreen()" class="p-3 bg-white/10 backdrop-blur-xl rounded-full border border-black/5 shadow-lg">
+        <button onclick="toggleFullScreen()" class="p-3 bg-white/10 backdrop-blur-xl rounded-full border border-black/5 shadow-lg hover:bg-white/20 transition-all">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
         </button>
-        <button onclick="toggleDrawer()" class="p-3 bg-white/10 backdrop-blur-xl rounded-full border border-black/5 shadow-lg">
+        <button onclick="toggleDrawer()" class="p-3 bg-white/10 backdrop-blur-xl rounded-full border border-black/5 shadow-lg hover:bg-white/20 transition-all">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
         </button>
     </div>
@@ -279,6 +313,7 @@
         const island = document.getElementById('island');
         const islandText = document.getElementById('island-text');
         const progress = document.getElementById('progress');
+        const progressParent = document.getElementById('progress-parent');
         const colorPicker = document.getElementById('color-picker');
         const colorHex = document.getElementById('color-hex');
 
@@ -306,7 +341,6 @@
         }
 
         function updateBgFromHex(hex) {
-            // Validate hex
             if(/^#[0-9A-F]{6}$/i.test(hex)) {
                 document.body.style.setProperty('--bg-page', hex);
                 colorPicker.value = hex;
@@ -337,6 +371,7 @@
             }, 1500);
         });
 
+        // Media Controls
         function togglePlay() {
             const icon = document.getElementById('play-icon');
             if (media.paused) {
@@ -348,9 +383,34 @@
             }
         }
 
+        // Skip logic (ถอยหลัง / ไปข้างหน้า)
+        function skip(seconds) {
+            media.currentTime = Math.max(0, Math.min(media.duration, media.currentTime + seconds));
+            
+            // แสดงข้อมูลใน Dynamic Island
+            island.classList.add('active');
+            islandText.classList.remove('opacity-0');
+            islandText.textContent = seconds > 0 ? `+${seconds}s` : `${seconds}s`;
+            
+            clearTimeout(window.islandTimer);
+            window.islandTimer = setTimeout(() => {
+                island.classList.remove('active');
+                islandText.classList.add('opacity-0');
+            }, 1000);
+        }
+
+        // คลิกเพื่อข้ามเวลาในวิดีโอ
+        function seek(e) {
+            const rect = progressParent.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            media.currentTime = pos * media.duration;
+        }
+
         media.addEventListener('timeupdate', () => {
-            const p = (media.currentTime / media.duration) * 100;
-            progress.style.width = p + '%';
+            if (media.duration) {
+                const p = (media.currentTime / media.duration) * 100;
+                progress.style.width = p + '%';
+            }
         });
 
         function setFit(mode) {
@@ -365,6 +425,8 @@
             if (file.type.startsWith('video/')) {
                 media.src = url;
                 media.play();
+                const icon = document.getElementById('play-icon');
+                icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
             } else {
                 media.poster = url;
                 media.src = "";
